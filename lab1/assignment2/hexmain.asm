@@ -4,7 +4,7 @@
 
 	.text
 main:
-	li	$a0,0		# change this to test different values
+	li	$a0,17		# change this to test different values
 
 	jal	hexasc		# call hexasc
 	nop			# delay slot filler (just in case)	
@@ -20,3 +20,12 @@ stop:	j	stop		# stop after one run
   # You can write your own code for hexasc here
   #
 
+hexasc:
+	andi	$v0,$a0,0xF	# Bit mask 4 least significant bits
+	slti	$t0,$v0,10	# Check if value is 0-9
+	
+	addi	$v0,$v0,48	# Increment to ASCII 0-9
+	bne	$t0,$zero,return # Only increment more if value is greater than 9
+	addi	$v0,$v0,7	# Increment to ASCII A-F
+return:
+	jr	$ra
