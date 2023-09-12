@@ -24,7 +24,7 @@ main:
 	syscall
 	nop
 	# wait a little
-	li	$a0,120000
+	li	$a0,10000
 	jal	delay
 	nop
 	# call tick
@@ -87,15 +87,15 @@ return:	jr	$ra
 # Adds a delay of $a0 milliseconds
 delay:
 	addi	$a0,$a0,-1		# Decrement ms counter
-	bgtz	$a0,delayfinish		# Loop while $a0 > 0
-	
 	li	$t0,0			# Innerloop counter (make 0 for safety)
+	blt	$a0,1,delayfinish		# Loop while $a0 > 0
 innerloop:
 	addi	$t0,$t0,1		# Decrement innerloop counter
 	blt	$t0,930,innerloop	# Continue looping while $t0 < 0
 	
+	j	delay
 delayfinish:
-	jr	$ra
+	jr $ra
 	nop
 
 # Converts a hexadecimal time code to a string
