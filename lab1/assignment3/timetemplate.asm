@@ -24,7 +24,7 @@ main:
 	syscall
 	nop
 	# wait a little
-	li	$a0,2
+	li	$a0,120000
 	jal	delay
 	nop
 	# call tick
@@ -73,8 +73,8 @@ tiend:	sw	$t0,0($a0)	# save updated result
 	nop
 
   # you can write your code for subroutine "hexasc" below this line
-  #
 
+# Converts a hexadecimal digit to an ASCII coded digit
 hexasc:
 	andi	$v0,$a0,0xF	# Bit mask 4 least significant bits
 	slti	$t0,$v0,10	# Check if value is 0-9
@@ -84,10 +84,21 @@ hexasc:
 	addi	$v0,$v0,7	# Increment to ASCII A-F
 return:	jr	$ra
 
+# Adds a delay of $a0 milliseconds
 delay:
-	jr $ra
-	nop
+	addi	$a0,$a0,-1		# Decrement ms counter
+	bgtz	$a0,delayfinish		# Loop while $a0 > 0
 	
+	li	$t0,0			# Innerloop counter (make 0 for safety)
+innerloop:
+	addi	$t0,$t0,1		# Decrement innerloop counter
+	blt	$t0,930,innerloop	# Continue looping while $t0 < 0
+	
+delayfinish:
+	jr	$ra
+	nop
+
+# Converts a hexadecimal time code to a string
 time2string:
 	PUSH($ra)		# Save return address
 	PUSH($s0)
