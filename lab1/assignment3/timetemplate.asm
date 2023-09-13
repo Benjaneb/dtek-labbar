@@ -24,7 +24,7 @@ main:
 	syscall
 	nop
 	# wait a little
-	li	$a0,120000
+	li	$a0,10
 	jal	delay
 	nop
 	# call tick
@@ -109,8 +109,28 @@ time2string:
 	PUSH($s0)
 	PUSH($s1)
 	move	$s0,$a0		# Save memory address for result	
-	andi	$s1,$a1,0xFF	# Save time data with bit mask of 16 least significant bits
+	andi	$s1,$a1,0xFFFF	# Save time data with bit mask of 16 least significant bits
+
+	bne	$s1,$zero,convert	# Only write "HOUR" if the time data is 0000
 	
+	li	$t0,72
+	sb	$t0,0($s0)	# Store H
+	
+	li	$t0,79
+	sb	$t0,1($s0)	# Store O
+	
+	li	$t0,85
+	sb	$t0,2($s0)	# Store U
+	
+	li	$t0,82
+	sb	$t0,3($s0)	# Store R
+	
+	sb	$zero,4($s0)	# Store null byte
+	
+	j	endtime2string
+	nop
+	
+convert:
 	srl	$a0,$s1,12	# Shift 1st digit to four least significant bits
 	jal	hexasc
 	nop
@@ -136,6 +156,7 @@ time2string:
 	
 	sb	$zero,5($s0)	# Store null character
 	
+endtime2string:
 	POP($s1)
 	POP($s0)
 	POP($ra)
