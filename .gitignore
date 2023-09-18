@@ -1,3 +1,6 @@
 *.o
 outfile.*
 .deps/
+*.exe
+vscode/
+
