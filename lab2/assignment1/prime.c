@@ -5,15 +5,16 @@
  This file is in the public domain.
 */
 
-
 #include <stdio.h>
 #include <math.h>
 
-int is_prime(int n){
+int is_prime(int n)
+{
   if (n <= 1)
     return 0;
-  
+
   // Check every number up until sqrt(n) if it divides n
+  // No number higher than sqrt(n) can divide n
   for (int i = 2; i <= sqrt(n); i++)
     if (n % i == 0)
       return 0;
@@ -21,7 +22,8 @@ int is_prime(int n){
   return 1;
 }
 
-int main(void){
+int main(void)
+{
   printf("%d\n", is_prime(11));  // 11 is a prime.      Should print 1.
   printf("%d\n", is_prime(383)); // 383 is a prime.     Should print 1.
   printf("%d\n", is_prime(987)); // 987 is not a prime. Should print 0.

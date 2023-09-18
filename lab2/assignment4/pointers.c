@@ -1,12 +1,27 @@
-
-
-
 #include <stdio.h>
 
 char* text1 = "This is a string.";
 char* text2 = "Yet another thing.";
 
+int list1[20];
+int list2[20];
+int count = 0;
 
+void copycodes(char* source, int* destination, int* count)
+{
+  while(*source != '\0') {
+    *destination = (int)*source;
+    destination++;  //Move to the next integer in destination 
+    source++;   //Move to next character in source
+    (*count)++;  //increment count
+  }
+}
+
+void work()
+{
+  copycodes(text1, list1, &count);
+  copycodes(text2, list2, &count);
+}
 
 void printlist(const int* lst){
   printf("ASCII codes and corresponding characters.\n");
