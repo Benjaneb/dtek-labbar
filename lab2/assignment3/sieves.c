@@ -21,17 +21,29 @@ void print_number(int n)
 void print_sieves(int n)
 {
     char composites[n];
+    // Zero initialize
     for (int i = 0; i < n; i++)
         composites[i] = 0;    
-
+    
+    // Sieve of eratosthenes
     for (int i = 2; i <= sqrt(n); i++)
         if (!composites[i])
             for (int j = i * i; j <= n; j += i)
                 composites[j] = 1;
 
-    for (int i = 2; i <= n; i++)
-        if (!composites[i])
+    int countDistanceFour = 0;
+    int previousPrime = 0;
+    // Print numbers not marked as composites
+    // and count prime numbers with distance 4 from previous prime
+    for (int i = 2; i <= n; i++) {
+        if (!composites[i]) {
             print_number(i);
+            if (i - previousPrime == 4)
+                countDistanceFour++;
+            previousPrime = i;
+        }
+    }
+    printf("\nPrimes with distance 4: %d\n", countDistanceFour);
 }
 
 // 'argc' contains the number of program arguments, and

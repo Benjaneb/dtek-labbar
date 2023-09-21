@@ -1,0 +1,1 @@
+I sieves.c räkna antalet gånger avståndet mellan två på varandra följande primtal är 4 och skriv ut det. Ex avståndet mellan 13 och 17 är 4.
