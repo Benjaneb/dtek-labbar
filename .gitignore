@@ -1,6 +1,11 @@
+*
+!*/
+!*.*
+
 *.o
 outfile.*
 .deps/
 *.exe
-vscode/
-
+.vscode/
+*.dSym/
+.DS_Store
