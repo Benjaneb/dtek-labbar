@@ -26,17 +26,18 @@ void print_sieves(int n)
         composites[i] = 0;    
     
     // Sieve of eratosthenes
-    for (int i = 2; i <= sqrt(n); i++)
-        if (!composites[i])
+    float sqrtn = sqrt(n);
+    for (int i = 2; i <= sqrtn; i++)
+        if (!composites[i-1])
             for (int j = i * i; j <= n; j += i)
-                composites[j] = 1;
+                composites[j-1] = 1;
 
     int countDistanceFour = 0;
     int previousPrime = 0;
     // Print numbers not marked as composites
     // and count prime numbers with distance 4 from previous prime
     for (int i = 2; i <= n; i++) {
-        if (!composites[i]) {
+        if (!composites[i-1]) {
             print_number(i);
             if (i - previousPrime == 4)
                 countDistanceFour++;

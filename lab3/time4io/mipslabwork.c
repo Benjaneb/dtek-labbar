@@ -43,6 +43,8 @@ void labwork( void )
 
   *porte = passedTicks;
 
+  delay(1000);
+
   int btnStates = getbtns();
   if (btnStates)
   {
@@ -55,8 +57,7 @@ void labwork( void )
     if (btnStates & 0x1) // BTN2
       mytime = (mytime & 0xFF0F) | (swStates << 4);
   }
-
-  delay(1000);
+  
   time2string( textstring, mytime );
   display_string( 3, textstring );
   display_update();

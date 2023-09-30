@@ -22,15 +22,17 @@ void print_sieves(int n)
 {
     char *composites = calloc(n, sizeof(char));
 
-    for (int i = 2; i <= sqrt(n); i++)
-        if (!composites[i])
+    float sqrtn = sqrt(n);
+    for (int i = 2; i <= sqrtn; i++)
+        if (!composites[i-1])
             for (int j = i * i; j <= n; j += i)
-                composites[j] = 1;
+                composites[j-1] = 1;
 
     for (int i = 2; i <= n; i++)
-        if (!composites[i])
+        if (!composites[i-1])
             print_number(i);
 
+    printf("\n");
     free(composites);
 }
 

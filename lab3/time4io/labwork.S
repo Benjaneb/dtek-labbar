@@ -41,7 +41,7 @@ delay:
 	nop
 innerloop:
 	addi	$t0,$t0,1		# Decrement innerloop counter
-	blt	$t0,15000,innerloop	# Continue looping while $t0 < 0 (imm=930 on desktop)
+	blt	$t0,5000,innerloop	# Continue looping while $t0 < 0 (imm=930 on desktop)
 	nop
 	
 	j	delay
