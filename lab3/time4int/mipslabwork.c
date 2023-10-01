@@ -24,9 +24,7 @@ char textstring[] = "text, more text, and even more text!";
 void user_isr( void )
 {
   timeoutcount++;
-  // Reset timer2 interrupt
-  volatile int16_t *ifs0clr = IFSCLR(0);
-  *ifs0clr = 0x0100;
+  IFSCLR(0) = 0x0100; // Reset timer2 interrupt
 
   if (timeoutcount >= 10)
   {
@@ -44,29 +42,17 @@ void labinit( void )
   volatile int8_t *trise = 0xbf886100;
   *trise = 0; // Set as output
 
-  volatile int16_t *trisd = TRISD;
-  *trisd |= 0x7F0; // 0111 1111 0000
+  TRISD |= 0x7F0; // 0111 1111 0000
 
-
-  // Set prescaling to 1
-  volatile int16_t *t2conset = T2CONSET;
-  *t2conset = 0x12;
+  T2CONSET = 0x10;    // Set prescaling to 1
   
-  // Clear timer
-  volatile int16_t *tmr2 = TMR2;
-  *tmr2 = 0;
-
-  // Set period
-  volatile int16_t *pr2 = PR2;
-  *pr2 = 10;
-
-  // Reset timer2 interrupt
-  volatile int16_t *ifs0clr = IFSCLR(0);
-  *ifs0clr = 0x0100;
+  TMR2 = 0;           // Clear timer
   
-  // Enable interrupts for timer2
-  volatile int32_t *iec0set = IECSET(0);
-  *iec0set = 0x100;
+  PR2 = 10;           // Set period
+  
+  IFSCLR(0) = 0x0100; // Reset timer2 interrupt
+  
+  IECSET(0) = 0x100;  // Enable interrupts for timer2
 
   enable_interrupt();
 }

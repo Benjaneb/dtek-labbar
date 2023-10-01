@@ -30,27 +30,15 @@ void labinit( void )
   volatile int8_t *trise = 0xbf886100;
   *trise = 0; // Set as output
 
-  volatile int16_t *trisd = TRISD;
-  *trisd |= 0x7F0; // 0111 1111 0000
+  TRISD |= 0x7F0; // 0111 1111 0000
 
-
-  // Set prescaling to 1
-  volatile int16_t *t2conset = T2CONSET;
-  *t2conset = 0x12;
+  T2CONSET = 0x10;    // Set prescaling to 1
   
-  // Clear timer
-  volatile int16_t *tmr2 = TMR2;
-  *tmr2 = 0;
-
-  // Set period
-  volatile int16_t *pr2 = PR2;
-  *pr2 = 10;
-
-  // Reset timer2 interrupt
-  volatile int16_t *ifs0clr = IFSCLR(0);
-  *ifs0clr = 0x0100;
+  TMR2 = 0;           // Clear timer
   
-  return;
+  PR2 = 10;           // Set period
+  
+  IFSCLR(0) = 0x0100; // Reset timer2 interrupt
 }
 
 /* This function is called repetitively from the main program */
@@ -76,12 +64,9 @@ void labwork( void )
   }
 
   // Update clock when there's an interrupt from timer2
-  volatile int32_t *ifs0 = IFS(0);
-  if (*ifs0 & 0x0100)
+  if (IFS(0) & 0x0100)
   {
-    // Reset timer2 interrupt
-    volatile int16_t *ifs0clr = IFSCLR(0);
-    *ifs0clr = 0x0100;
+    IFSCLR(0) = 0x0100; // Reset timer2 interrupt
 
     time2string( textstring, mytime );
     display_string( 3, textstring );

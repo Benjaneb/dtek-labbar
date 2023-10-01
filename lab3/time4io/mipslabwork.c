@@ -30,9 +30,7 @@ void labinit( void )
   volatile char *trise = 0xbf886100;
   *trise = 0;
 
-  volatile int *trisd = TRISD;
-  *trisd |= 0x7F0; // 0111 1111 0000
-  return;
+  TRISD |= 0x7F0; // 0111 1111 0000
 }
 
 /* This function is called repetitively from the main program */
