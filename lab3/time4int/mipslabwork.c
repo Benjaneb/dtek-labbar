@@ -44,17 +44,24 @@ void labinit( void )
 
   TRISD |= 0x7F0; // 0111 1111 0000
 
-  T2CONSET = 0x10;    // Set prescaling to 1
+  // Initialize timer2
+
+  T2CON = 0;    // Set prescaling to 1:1, stop timer
   
   TMR2 = 0;           // Clear timer
   
   PR2 = 10;           // Set period
+
+  IPCSET(2) = 0xC;    // Priority level 3
+  IPCSET(2) = 0x1;    // Subpriority level 1
   
   IFSCLR(0) = 0x0100; // Reset timer2 interrupt
   
   IECSET(0) = 0x100;  // Enable interrupts for timer2
 
   enable_interrupt();
+
+  T2CONSET = 0x8000;
 }
 
 /* This function is called repetitively from the main program */
