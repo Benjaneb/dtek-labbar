@@ -27,17 +27,28 @@ void user_isr( void )
 /* Lab-specific initialization goes here */
 void labinit( void )
 {
-  volatile uint8_t *trise = 0xbf886100;
+  volatile int8_t *trise = 0xbf886100;
   *trise = 0; // Set as output
 
-  volatile uint16_t *trisd = TRISD;
+  volatile int16_t *trisd = TRISD;
   *trisd |= 0x7F0; // 0111 1111 0000
 
-  volatile uint16_t *pr2 = PR2;
+
+  // Set prescaling to 1
+  volatile int16_t *t2conset = T2CONSET;
+  *t2conset = 0x12;
+  
+  // Clear timer
+  volatile int16_t *tmr2 = TMR2;
+  *tmr2 = 0;
+
+  // Set period
+  volatile int16_t *pr2 = PR2;
   *pr2 = 10;
 
-  *IFSCLR(0) = 0x0100;
-  *T2CONSET = 0x10;
+  // Reset timer2 interrupt
+  volatile int16_t *ifs0clr = IFSCLR(0);
+  *ifs0clr = 0x0100;
   
   return;
 }
@@ -64,10 +75,13 @@ void labwork( void )
       mytime = (mytime & 0xFF0F) | (swStates << 4);
   }
 
-  // Update clock when timer clocks
-  if (IFS(0) & 0x0100)
+  // Update clock when there's an interrupt from timer2
+  volatile int32_t *ifs0 = IFS(0);
+  if (*ifs0 & 0x0100)
   {
-    *IFSCLR(0) = 0x0100;
+    // Reset timer2 interrupt
+    volatile int16_t *ifs0clr = IFSCLR(0);
+    *ifs0clr = 0x0100;
 
     time2string( textstring, mytime );
     display_string( 3, textstring );
