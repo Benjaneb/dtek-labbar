@@ -17,6 +17,7 @@
 int mytime = 0x5957;
 
 char textstring[] = "text, more text, and even more text!";
+int timeoutcount = 0;
 
 /* Interrupt Service Routine */
 void user_isr( void )
@@ -36,7 +37,9 @@ void labinit( void )
   
   TMR2 = 0;           // Clear timer
   
-  PR2 = 10000;           // Set period
+  T2CONSET = 0x70;    // Prescaling 256:1
+
+  PR2 = 80000000 / 256 * 0.1; // Set period 
 
   IPCSET(2) = 0xC;    // Priority level 3
   IPCSET(2) = 0x1;    // Subpriority level 1
@@ -45,7 +48,7 @@ void labinit( void )
   
   IECSET(0) = 0x100;  // Enable interrupts for timer2
 
-  T2CONSET = 0x8000;
+  T2CONSET = 0x8000;  // Start timer
 }
 
 /* This function is called repetitively from the main program */
@@ -73,13 +76,18 @@ void labwork( void )
   // Update clock when there's an interrupt from timer2
   if (IFS(0) & 0x0100)
   {
+    timeoutcount++;
     IFSCLR(0) = 0x0100; // Reset timer2 interrupt
 
-    time2string( textstring, mytime );
-    display_string( 3, textstring );
-    display_update();
-    tick( &mytime );
-    display_image(96, icon);
+    if (timeoutcount >= 10)
+    {
+      time2string( textstring, mytime );
+      display_string( 3, textstring );
+      display_update();
+      tick( &mytime );
+      display_image(96, icon);
+      timeoutcount = 0;
+    }
   }
 
   passedTicks++;

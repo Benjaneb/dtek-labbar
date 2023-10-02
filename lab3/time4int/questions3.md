@@ -13,4 +13,5 @@ The purpose of saving the register is to ensure that in case an interuppt occurs
 The distinction between caller-saved and callee-saved registers balance efficiency and safety. Not all registers need to be saved and restored for every function call or interrupt, which would be time-consuming and wasteful. By categorizing registers and establishing conventions about their use, the system can minimize overhead while ensuring that functions and ISRs don't inadvertently step on each other's toes.
 
 ## Which device-register (or registers), and which processor-register (or registers) must be written to enable interrupts from the timer? Describe the functions of the relevant registers.
-IEC (interrupt enable control)
+IEC (interrupt enable control), which enables interrupts for different timers depending on which bit is set to 1.
+IPC (interrupt priority control), which sets the priority levels for the respective timers.

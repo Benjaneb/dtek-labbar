@@ -23,16 +23,25 @@ char textstring[] = "text, more text, and even more text!";
 /* Interrupt Service Routine */
 void user_isr( void )
 {
-  timeoutcount++;
-  IFSCLR(0) = 0x0100; // Reset timer2 interrupt
-
-  if (timeoutcount >= 10)
+  if (IFS(0) & 0x80000) // It's an interrupt from SW4
   {
-    timeoutcount = 0;
-    time2string( textstring, mytime );
-    display_string( 3, textstring );
-    display_update();
-    tick( &mytime );
+    IFSCLR(0) = 0x80000; // Reset SW4 interrupt flag
+    
+    PORTE += 1;
+  }
+  else
+  {
+    timeoutcount++;
+    IFSCLR(0) = 0x0100; // Reset timer2 interrupt
+
+    if (timeoutcount >= 10)
+    {
+      timeoutcount = 0;
+      time2string( textstring, mytime );
+      display_string( 3, textstring );
+      display_update();
+      tick( &mytime );
+    }
   }
 }
 
@@ -44,13 +53,18 @@ void labinit( void )
 
   TRISD |= 0x7F0; // 0111 1111 0000
 
+  PORTE = 0;
+  IECSET(0) = 0x80000;  // Enable interrupts for SW4
+
   // Initialize timer2
 
   T2CON = 0;    // Set prescaling to 1:1, stop timer
   
   TMR2 = 0;           // Clear timer
   
-  PR2 = 10;           // Set period
+  T2CONSET = 0x70;    // Prescaling 256:1
+
+  PR2 = 80000000 / 256 * 0.1; // Set period
 
   IPCSET(2) = 0xC;    // Priority level 3
   IPCSET(2) = 0x1;    // Subpriority level 1
@@ -61,7 +75,7 @@ void labinit( void )
 
   enable_interrupt();
 
-  T2CONSET = 0x8000;
+  T2CONSET = 0x8000;  // Start timer
 }
 
 /* This function is called repetitively from the main program */
