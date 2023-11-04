@@ -1,0 +1,5 @@
+# Explain how the bit selection works for the alternatives that are controlled by the RegDst control signal. Which instructions are using what logic and why?
+With a multiplexer, RegDst chooses either rt (top) or rd (bottom) as the input to A3, which is the register to be written to. R-type instructions (like add) writes to rd while I-type instructions (like addi) writes to rt.
+
+# Explain how the beq instruction is implemented, how the address is calculated, and how the signals are controlled by the control unit.
+It first checks if the values in the two registers are equal by subtracting them and then sending out a zero flag if the result is zero. If the result was zero and the branch flag is set to 1 by the control unit it chooses an alternate new value for the PC, which is PC + 4 + 4*signext(imm).
